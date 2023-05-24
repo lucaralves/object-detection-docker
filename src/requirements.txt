@@ -1,0 +1,5 @@
+FastAPI
+gunicorn
+uvicorn
+httpx
+python-multipart
