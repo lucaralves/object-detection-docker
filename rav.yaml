@@ -1,0 +1,18 @@
+scripts:
+  installs: pip install -r requirements.txt
+  runserver: uvicorn main:app --reload
+  build: docker build -f Dockerfile -t serverless-object-detection .
+  containerize: docker run -p 8000:8000 --name serverless-container-object-detection -it serverless-object-detection
+  build_containerize:
+    - rav run build
+    - rav run containerize
+  start: docker start serverless-container-object-detection
+  stop: docker stop serverless-container-object-detection
+  create_repo:
+    - gcloud auth configure-docker us-central1-docker.pkg.dev
+    - gcloud artifacts repositories create serverless-object-detection-repo --repository-format=docker --location=us-central1
+  push:
+    - docker build --platform=linux/amd64 -f Dockerfile -t serverless-object-detection-amd64 .
+    - docker tag serverless-object-detection-amd64 us-central1-docker.pkg.dev/teak-node-386212/serverless-py-repo/serverless-object-detection:latest
+    - docker push us-central1-docker.pkg.dev/teak-node-386212/serverless-object-detection-repo/serverless-object-detection --all-tags
+  deploy: gcloud run deploy serverless-object-detection-service-cl --image=us-central1-docker.pkg.dev/teak-node-386212/serverless-object-detection-repo/serverless-object-detection:latest --allow-unauthenticated --region=us-central1 --project=teak-node-386212
