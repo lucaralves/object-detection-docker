@@ -2,7 +2,6 @@ import os
 import cv2
 import base64
 from fastapi import FastAPI, UploadFile
-import uvicorn
 import tensorflow as tf
 
 # Project structure.
@@ -110,6 +109,3 @@ async def postController(file: UploadFile):
     base64Image = base64.b64encode(encoded_image.tobytes())
 
     return {"base64": base64Image}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

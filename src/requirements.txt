@@ -3,3 +3,8 @@ gunicorn
 uvicorn
 httpx
 python-multipart
+tensorflow
+opencv-python
+google-cloud-aiplatform
+google-cloud-storage
+rav
