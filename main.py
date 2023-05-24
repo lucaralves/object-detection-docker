@@ -2,14 +2,13 @@ import os
 import cv2
 import base64
 from fastapi import FastAPI, UploadFile
+import numpy as np
 import tensorflow as tf
 
 # Project structure.
 PROJECT_DIR = os.getcwd()
 MODEL_DIR = os.path.join(PROJECT_DIR, "model")
 MODEL_FILE_DIR = os.path.join(MODEL_DIR, "saved_model.pb")
-IMAGES_DIR = os.path.join(PROJECT_DIR, "images")
-IMAGE_PATH = os.path.join(IMAGES_DIR, "image-post.jpg")
 
 # Import the TF graph.
 loaded_model = tf.saved_model.load(MODEL_DIR)
@@ -46,12 +45,11 @@ def processOutputOfModel(outputs):
             index_of_detections.append(i)
         i = i + 1
 
-def processImage():
+def processImage(img):
 
     global detection_boxes
     global detection_classes_as_text
 
-    img = cv2.imread(IMAGE_PATH, cv2.IMREAD_ANYCOLOR)
     color = (0, 255, 0)
     thickness = 1
     for index_of_detection in index_of_detections:
@@ -80,17 +78,13 @@ async def postController(uploadFile: UploadFile):
         input_tensor_shape = get_input_shape(graph, input_tensor_name)
         print(f"{input_tensor_name}: {input_tensor_shape}")
 
-    with open(IMAGE_PATH, "wb") as f:
-        contents = await uploadFile.read()  # Read the contents of the file
-        f.write(contents)  # Write the contents to disk
-
     # Carrega-se a imagem.
-    image = tf.io.read_file(IMAGE_PATH)
-    image = tf.image.decode_jpeg(image, channels=3)
-    print(image.shape.as_list())
+    image = await uploadFile.read()  # Read the contents of the file
+    tensorImage = tf.image.decode_jpeg(image, channels=3)
+    print(tensorImage.shape.as_list())
 
     # Pre-process the image.
-    resized_image = tf.image.resize(image, [224, 224])
+    resized_image = tf.image.resize(tensorImage, [224, 224])
     expanded_image = tf.expand_dims(resized_image, 0)
     print(expanded_image.shape.as_list())
 
@@ -102,10 +96,11 @@ async def postController(uploadFile: UploadFile):
     outputs = graph(image_bytes=encoded_image, key=tf.expand_dims(tf.convert_to_tensor("myKey"), 0))
     processOutputOfModel(outputs)
 
-    img = processImage()
+    # Draw the bounding boxes on the image.
+    outputImage = processImage(cv2.imdecode(np.frombuffer(image, np.uint8), cv2.IMREAD_COLOR))
 
     # Encode the image to base64.
-    _, encoded_image = cv2.imencode(".jpg", img)
+    _, encoded_image = cv2.imencode(".jpg", outputImage)
     base64Image = base64.b64encode(encoded_image.tobytes())
 
     return {"base64": base64Image}
