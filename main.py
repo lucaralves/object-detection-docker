@@ -22,6 +22,7 @@ detection_boxes = None
 detection_classes_as_text = None
 detection_scores = None
 
+# Get the input shape of the model.
 def get_input_shape(graph, input_tensor_name):
 
     for input_tensor in graph.inputs:
@@ -30,6 +31,7 @@ def get_input_shape(graph, input_tensor_name):
             return input_tensor_shape
     return None
 
+# Convert the output of the model in numpy arrays and get the index of the most confident detections.
 def processOutputOfModel(outputs):
 
     global detection_boxes
@@ -45,6 +47,7 @@ def processOutputOfModel(outputs):
             index_of_detections.append(i)
         i = i + 1
 
+# Draw the bounding boxes.
 def processImage(img):
 
     global detection_boxes
