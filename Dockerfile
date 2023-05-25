@@ -11,7 +11,9 @@ RUN apt-get update && \
     python3-dev \
     python3-setuptools \
     gcc \
-    make
+    make \
+    libgl1-mesa-glx\
+    libglib2.0-0
 
 # Create virtualenv.
 RUN python3 -m venv /opt/venv && \

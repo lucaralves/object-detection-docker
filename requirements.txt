@@ -7,3 +7,4 @@ tensorflow
 opencv-python
 google-cloud-aiplatform
 google-cloud-storage
+numpy
