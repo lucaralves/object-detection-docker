@@ -13,6 +13,6 @@ scripts:
     - gcloud artifacts repositories create serverless-object-detection-repo --repository-format=docker --location=us-central1
   push:
     - docker build --platform=linux/amd64 -f Dockerfile -t serverless-object-detection-amd64 .
-    - docker tag serverless-object-detection-amd64 us-central1-docker.pkg.dev/teak-node-386212/serverless-py-repo/serverless-object-detection:latest
+    - docker tag serverless-object-detection-amd64 us-central1-docker.pkg.dev/teak-node-386212/serverless-object-detection-repo/serverless-object-detection:latest
     - docker push us-central1-docker.pkg.dev/teak-node-386212/serverless-object-detection-repo/serverless-object-detection --all-tags
   deploy: gcloud run deploy serverless-object-detection-service-cl --image=us-central1-docker.pkg.dev/teak-node-386212/serverless-object-detection-repo/serverless-object-detection:latest --allow-unauthenticated --region=us-central1 --project=teak-node-386212
