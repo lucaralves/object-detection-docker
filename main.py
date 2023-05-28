@@ -81,7 +81,7 @@ async def postController(uploadFile: UploadFile):
         input_tensor_shape = get_input_shape(graph, input_tensor_name)
         print(f"{input_tensor_name}: {input_tensor_shape}")
 
-    # Carrega-se a imagem.
+    # Load the image.
     image = await uploadFile.read()
     tensorImage = tf.image.decode_jpeg(image, channels=3)
     print(tensorImage.shape.as_list())
