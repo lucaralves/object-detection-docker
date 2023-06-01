@@ -1,7 +1,11 @@
 from google.cloud import aiplatform
 from google.cloud import storage
 import os
-from main import MODEL_FILE_DIR
+
+# Project structure.
+PROJECT_DIR = os.getcwd()
+MODEL_DIR = os.path.join(PROJECT_DIR, "model")
+MODEL_FILE_DIR = os.path.join(MODEL_DIR, "saved_model.pb")
 
 def export_model_sample(
     project: str,
@@ -42,9 +46,9 @@ def download_model_from_gcs(bucket_name: str, gcs_file_path: str, local_file_pat
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "teak-node-386212-87b132b61be4.json"
 
 # Export the model to GCS.
-export_model_sample("teak-node-386212", "1423042924249088000", "gs://pepsi-cocacola-bucket-model-edge/")
+# export_model_sample("teak-node-386212", "1085624795917189120", "gs://retail-bucket1/")
 
 # Call the function to download the model from GCS.
-download_model_from_gcs("pepsi-cocacola-bucket-model-edge",
-                        "model-1423042924249088000/tf-saved-model/2023-05-23T11:13:54.160040Z/saved_model.pb",
-                        str(MODEL_FILE_DIR))
+download_model_from_gcs("retail-bucket1",
+                     "model-1085624795917189120/tf-saved-model/2023-05-31T20:45:58.762852Z/saved_model.pb",
+                      str(MODEL_FILE_DIR))

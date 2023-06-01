@@ -65,6 +65,7 @@ def processImage(img):
                     (int(detection_boxes[0][index_of_detection][1] * img.shape[1]),
                      int(detection_boxes[0][index_of_detection][0] * img.shape[0]) - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.4, (36, 36, 255), 2)
+        print(str(detection_classes_as_text[0][index_of_detection]))
 
     return img
 
